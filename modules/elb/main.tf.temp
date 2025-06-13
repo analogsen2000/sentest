@@ -1,0 +1,57 @@
+provider aws {
+region = "ap-south-1"
+}
+
+resource aws_security_group elbsg {
+vpc_id = var.vpc
+
+dynamic egress {
+for_each = var.elbsgeg
+content {
+from_port = egress.value
+to_port = egress.value
+protocol = "tcp"
+cidr_blocks = ["0.0.0.0/0"]
+}
+}
+
+dynamic ingress {
+for_each = var.elbsgin
+content {
+description = "Allow SSH Traffic"
+from_port = ingress.value
+to_port = ingress.value
+protocol = ingress.value
+cidr_blocks = ["0.0.0.0/0"]
+}
+}
+}
+
+resource aws_elb aselb {
+count =  var.celb ? 1 : 0
+security_groups = [aws_security_group.elbsg.id]
+#name = var.name
+subnets = var.sn
+#idle_timeout = var.timeout
+#connection_draining = var.cd
+#connection_draining_timeout = var.cdt
+
+dynamic listener {
+for_each = var.listener
+content {
+lb_port = listener.value.lb_port
+lb_protocol = listener.value.lb_protocol
+instance_port = listener.value.instance_port
+instance_protocol = listener.value.instance_protocol
+}
+}
+
+health_check {
+healthy_threshold = lookup(var.health_check, "healthy_threshold")
+unhealthy_threshold = lookup(var.health_check, "unhealthy_threshold")
+target = lookup(var.health_check, "target")
+timeout = lookup(var.health_check, "timeout")
+interval = lookup(var.health_check, "interval")
+}
+}
+

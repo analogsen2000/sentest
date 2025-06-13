@@ -1,0 +1,48 @@
+variable "elbsgeg" {
+type = list
+default = ["80", "8080", "443"]
+}
+
+variable celb {
+type = bool
+default = true
+}
+
+variable sn {
+type = list
+default = ["subnet-0683c14cda64ab22d"]
+}
+
+variable elbsgin {
+type = list
+default = ["22", "53"]
+}
+
+
+variable health_check {
+type = map(string)
+default = {
+target              = "TCP:8080"
+interval            = 30
+healthy_threshold   = 2
+unhealthy_threshold = 2
+timeout             = 5
+}
+}
+
+variable vpc {
+default = "vpc-0832ab24b4e348032"
+}
+
+variable listener {
+type = list(map(string)) 
+default = [
+    {
+      instance_port     = 8080
+      instance_protocol = "http"
+      lb_port           = 80
+      lb_protocol       = "http"
+    },
+  ]
+}
+

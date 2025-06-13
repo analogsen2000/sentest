@@ -1,0 +1,34 @@
+variable myvpc {
+default = "vpc-0832ab24b4e348032"
+}
+
+variable eg {
+type = list
+default = ["80", "8080", "443"]
+}
+
+variable in {
+type = list(map(string))
+default =  [{
+from_port = "22"
+to_port = "22"
+protocol = "tcp"
+},
+{
+from_port = "3389"
+protocol = "udp"
+to_port = "3389"
+},
+]
+}
+
+variable lr {
+type = list(map(string))
+default = [{
+iport = "80"
+iprotocol = "http"
+lport = "8080"
+lprotocol = "http"
+}
+]
+}
